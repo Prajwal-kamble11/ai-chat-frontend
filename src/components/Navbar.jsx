@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Menu, X } from "lucide-react";
-import logo from "../assets/ami-logo.png";
+import logo from "../assets/img-logo.png";
 
 function Navbar({ user }) {
   const [openMenu, setOpenMenu] = useState(false);

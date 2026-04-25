@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/ami-logo.png";
+import logo from "../assets/img-logo.png";
 
 function Footer() {
   return (

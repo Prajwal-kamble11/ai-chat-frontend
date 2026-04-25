@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
-import logo from "../assets/temp-logo.png";
+import logo from "../assets/img-logo.png";
 
 function HeroSection() {
   return (
