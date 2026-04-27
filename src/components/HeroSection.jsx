@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { useAuth } from "../context/AuthContext";
 import logo from "../assets/img-logo.png";
 
 function HeroSection() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <section className="max-w-7xl mx-auto px-6 pt-10 pb-16 grid lg:grid-cols-2 gap-10 items-center">
 
@@ -11,7 +13,7 @@ function HeroSection() {
           Your Personal AI Assistant
         </div>
 
-        <h1 className="text-6xl font-bold leading-tight">
+        <h1 className="text-6xl font-bold leading-tight text-white">
           Meet <span className="text-violet-500">AMI</span>,
           <br />
           Your Personal
@@ -26,30 +28,30 @@ function HeroSection() {
 
         <div className="mt-8 flex gap-4 flex-wrap">
 
-          <SignedOut>
-            <Link
-              to="/sign-up"
-              className="px-7 py-4 rounded-2xl bg-violet-600 hover:bg-violet-500"
-            >
-              Try AMI For Free
-            </Link>
+          {!isAuthenticated ? (
+            <>
+              <Link
+                to="/sign-up"
+                className="px-7 py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 transition-all text-white font-medium"
+              >
+                Try AMI For Free
+              </Link>
 
-            <Link
-              to="/sign-in"
-              className="px-7 py-4 rounded-2xl border border-slate-700"
-            >
-              Sign In
-            </Link>
-          </SignedOut>
-
-          <SignedIn>
+              <Link
+                to="/sign-in"
+                className="px-7 py-4 rounded-2xl border border-slate-700 text-white font-medium hover:bg-slate-900 transition-all"
+              >
+                Sign In
+              </Link>
+            </>
+          ) : (
             <Link
               to="/dashboard"
-              className="px-7 py-4 rounded-2xl bg-violet-600 hover:bg-violet-500"
+              className="px-7 py-4 rounded-2xl bg-violet-600 hover:bg-violet-500 transition-all text-white font-medium"
             >
               Go to Dashboard
             </Link>
-          </SignedIn>
+          )}
 
         </div>
 
@@ -60,10 +62,13 @@ function HeroSection() {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-violet-700/40 bg-slate-950 shadow-2xl p-6 min-h-130 flex items-center justify-center">
+      <div className="rounded-3xl border border-violet-700/40 bg-slate-950 shadow-2xl p-6 min-h-[400px] flex items-center justify-center">
         <div className="text-center">
-          <img src={logo} alt="AMI" className="w-20 h-20 mx-auto mb-6" />
-          <h2 className="text-4xl font-bold">Welcome back!</h2>
+          <div className="relative inline-block mb-6">
+            <div className="absolute inset-0 bg-violet-600 blur-2xl opacity-20 animate-pulse"></div>
+            <img src={logo} alt="AMI" className="w-20 h-20 relative z-10" />
+          </div>
+          <h2 className="text-4xl font-bold text-white">Welcome!</h2>
           <p className="text-slate-400 mt-3">
             How can I help you today?
           </p>

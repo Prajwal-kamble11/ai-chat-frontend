@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { useAuth } from "../context/AuthContext";
 import { Menu, X } from "lucide-react";
 import logo from "../assets/img-logo.png";
 
-function Navbar({ user }) {
+function Navbar() {
+  const { user, isAuthenticated } = useAuth();
   const [openMenu, setOpenMenu] = useState(false);
 
   return (
@@ -14,12 +15,12 @@ function Navbar({ user }) {
       <div className="max-w-7xl mx-auto px-4 py-5 flex items-center justify-between">
 
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3">
           <img src={logo} alt="AMI Logo" className="w-10 h-10" />
           <span className="text-2xl tracking-[0.35em] text-white">
             AMI
           </span>
-        </div>
+        </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-10 text-sm text-slate-300">
@@ -33,46 +34,41 @@ function Navbar({ user }) {
         {/* Desktop Right */}
         <div className="hidden md:flex items-center gap-3">
 
-          <SignedOut>
-            <Link
-              to="/sign-in"
-              className="px-5 py-2 rounded-xl border border-slate-700"
-            >
-              Sign In
-            </Link>
+          {!isAuthenticated ? (
+            <>
+              <Link
+                to="/sign-in"
+                className="px-5 py-2 rounded-xl border border-slate-700"
+              >
+                Sign In
+              </Link>
 
-            <Link
-              to="/sign-up"
-              className="px-5 py-2 rounded-xl bg-white text-black font-medium"
-            >
-              Get Started
-            </Link>
-          </SignedOut>
-
-          <SignedIn>
-
-            <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-violet-600/15 border border-violet-500/30">
-
-              <div className="w-9 h-9 rounded-full bg-violet-600 flex items-center justify-center text-white font-bold uppercase">
-                {(user?.firstName?.[0] ||
-                  user?.username?.[0] ||
-                  "U")}
+              <Link
+                to="/sign-up"
+                className="px-5 py-2 rounded-xl bg-white text-black font-medium transition-all hover:bg-slate-200"
+              >
+                Get Started
+              </Link>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-violet-600/15 border border-violet-500/30">
+                <div className="w-9 h-9 rounded-full bg-violet-600 flex items-center justify-center text-white font-bold uppercase">
+                  {user?.full_name?.[0] || user?.email?.[0] || "U"}
+                </div>
+                <span className="text-violet-300 font-semibold text-sm">
+                  Hello {user?.full_name || "User"}
+                </span>
               </div>
 
-              <span className="text-violet-300 font-semibold text-sm">
-                Hello {user?.firstName || user?.username || "User"}
-              </span>
-
-            </div>
-
-            <Link
-              to="/dashboard"
-              className="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500"
-            >
-              Dashboard
-            </Link>
-
-          </SignedIn>
+              <Link
+                to="/dashboard"
+                className="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 transition-all"
+              >
+                Dashboard
+              </Link>
+            </>
+          )}
 
         </div>
 
@@ -112,39 +108,39 @@ function Navbar({ user }) {
 
           <div className="pt-3 border-t border-slate-800">
 
-            <SignedOut>
-              <Link
-                to="/sign-in"
-                onClick={() => setOpenMenu(false)}
-                className="block mb-3"
-              >
-                Sign In
-              </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/sign-in"
+                  onClick={() => setOpenMenu(false)}
+                  className="block mb-3"
+                >
+                  Sign In
+                </Link>
 
-              <Link
-                to="/sign-up"
-                onClick={() => setOpenMenu(false)}
-                className="block px-5 py-3 rounded-xl bg-white text-black font-medium text-center"
-              >
-                Get Started
-              </Link>
-            </SignedOut>
+                <Link
+                  to="/sign-up"
+                  onClick={() => setOpenMenu(false)}
+                  className="block px-5 py-3 rounded-xl bg-white text-black font-medium text-center"
+                >
+                  Get Started
+                </Link>
+              </>
+            ) : (
+              <>
+                <p className="mb-3 text-violet-300 font-semibold">
+                  Hello {user?.full_name || "User"} 👋
+                </p>
 
-            <SignedIn>
-
-              <p className="mb-3 text-violet-300 font-semibold">
-                Hello {user?.firstName || user?.username || "User"} 👋
-              </p>
-
-              <Link
-                to="/dashboard"
-                onClick={() => setOpenMenu(false)}
-                className="block px-5 py-3 rounded-xl bg-violet-600 text-center"
-              >
-                Dashboard
-              </Link>
-
-            </SignedIn>
+                <Link
+                  to="/dashboard"
+                  onClick={() => setOpenMenu(false)}
+                  className="block px-5 py-3 rounded-xl bg-violet-600 text-center"
+                >
+                  Dashboard
+                </Link>
+              </>
+            )}
 
           </div>
 

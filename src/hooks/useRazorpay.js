@@ -1,15 +1,19 @@
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast";
 
 export function useRazorpay() {
-  const { getToken } = useAuth();
-  const { user } = useUser();
+  const { token, user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const upgradeToPro = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    
     try {
-      const token = await getToken();
       if (!token) {
         toast.error("Your session has expired. Please log in again.");
+        setIsLoading(false);
         return;
       }
 
@@ -31,15 +35,17 @@ export function useRazorpay() {
         name: "AMI Pro Plan",
         description: "Unlock 500 messages/day & smarter memory for just ₹99",
         order_id: orderData.order_id,
+        modal: {
+          ondismiss: function() {
+            setIsLoading(false);
+          }
+        },
         handler: async function (response) {
-          // Fetch a fresh token for verification as payment might have taken time
-          const freshToken = await getToken();
-
           const verifyRes = await fetch(`${import.meta.env.VITE_API_URL}/payment/verify`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${freshToken}`
+              Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
@@ -53,11 +59,12 @@ export function useRazorpay() {
             setTimeout(() => window.location.reload(), 1500);
           } else {
             toast.error("Verification failed. Please contact support.");
+            setIsLoading(false);
           }
         },
         prefill: {
-          name: user?.fullName,
-          email: user?.primaryEmailAddress?.emailAddress
+          name: user?.full_name,
+          email: user?.email
         },
         theme: { color: "#7c3aed" }
       };
@@ -69,8 +76,9 @@ export function useRazorpay() {
     } catch (error) {
       console.error("Payment error:", error);
       toast.error(`Payment failed: ${error.message || "Something went wrong"}`);
+      setIsLoading(false);
     }
   };
 
-  return { upgradeToPro };
+  return { upgradeToPro, isLoading };
 }

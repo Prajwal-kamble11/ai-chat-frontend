@@ -31,18 +31,22 @@ function MessageList({ messages, user, isTyping, isThinking }) {
               {msg.role === "assistant" ? (
                 <Bot size={18} />
               ) : (
-                <img src={user?.imageUrl} alt="U" className="w-full h-full object-cover" />
+                <span className="text-xs font-bold text-white uppercase">
+                  {user?.full_name?.charAt(0) || user?.email?.charAt(0) || "U"}
+                </span>
               )}
             </div>
 
-            <div
-              className={`max-w-xl px-5 py-4 rounded-2xl whitespace-pre-wrap leading-relaxed ${
-                msg.role === "user"
-                  ? "bg-violet-600 text-white rounded-tr-none shadow-lg shadow-violet-900/10"
-                  : "bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none"
-              }`}
-            >
-              {msg.text}
+            <div className="flex flex-col gap-1 max-w-xl">
+              <div
+                className={`px-5 py-4 rounded-2xl whitespace-pre-wrap leading-relaxed ${
+                  msg.role === "user"
+                    ? "bg-violet-600 text-white rounded-tr-none shadow-lg shadow-violet-900/10"
+                    : "bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none"
+                }`}
+              >
+                {msg.text}
+              </div>
             </div>
           </div>
         ))}
